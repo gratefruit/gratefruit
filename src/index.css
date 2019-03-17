@@ -12,3 +12,16 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+
+.grateful-input-group input {
+  border: none;
+}
+
+.grateful-input-group { 
+  padding: 2px;
+}
+
+.grateful-input-list {
+  margin-bottom: 1em;
+}
