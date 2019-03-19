@@ -13,6 +13,7 @@ function GratefulInputItems(props) {
                 id={`item-${index}`}
                 onChange={props.onChange(index, item)} 
                 onKeyPress={props.onKeyPress(index)}
+                ref={input => input && input.focus()}
                 value={item} />
         </li>
     })
@@ -96,7 +97,7 @@ function GratefulForm(props) {
                     
                 </form>
             :
-                <SuccessfulSubmit name="Joe" />
+                <SuccessfulSubmit name="Joe" items={inputs} />
             }
         </div>
     )
