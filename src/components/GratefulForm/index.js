@@ -63,6 +63,12 @@ function GratefulForm(props) {
         }
     }
 
+    const handleNextButton = (event) => {
+        if (activeIndex < inputs.length) {
+            setActiveInput(activeIndex + 1)
+        }
+    }
+
 
     return (
         <div>
@@ -76,9 +82,17 @@ function GratefulForm(props) {
                         onChange={inputChangedHandler} 
                         onKeyPress={handleInputKeyPress} />
 
-                    <p className="form-group">
-                        <button className="btn btn-primary btn-lg btn-block" disabled={!saveEnabled} type="submit">Save</button>
-                    </p>
+                    {
+                        (saveEnabled) ?
+                            <p className="form-group">
+                                <button className="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+                            </p>
+                        :
+                            <p className="form-group">
+                                <button className="btn btn-primary btn-lg btn-block" type="button" onClick={handleNextButton} >Next</button>
+                            </p>
+                    }
+                    
                     
                 </form>
             :
