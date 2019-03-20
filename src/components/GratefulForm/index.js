@@ -3,13 +3,17 @@ import SuccessfulSubmit from './SuccessfulSubmit'
 
 function GratefulInputItems(props) {
     const items = props.items || []
+    const active = props.active || 0
 
     return items.map((item, index) => {
-        return <li key={index} className="list-group-item grateful-input-group">
+        return <li key={index} 
+                   hidden={(index !== active)}
+                   className="list-group-item grateful-input-group">
             <input name={index} className="form-control"
                 id={`item-${index}`}
                 onChange={props.onChange(index, item)} 
                 onKeyPress={props.onKeyPress(index)}
+                ref={input => input && input.focus()}
                 value={item} />
         </li>
     })
@@ -19,6 +23,7 @@ function GratefulForm(props) {
     const [inputs, setInputs] = useState(Array.from({ length: props.items }, () => ""))
     const [saveEnabled, setSaveEnabled] = useState(false)
     const [completed, setCompleted] = useState(false)
+    const [activeIndex, setActiveInput] = useState(0)
 
     function inputChangedHandler(index) {
         return (event) => {
@@ -46,10 +51,22 @@ function GratefulForm(props) {
 
     const handleInputKeyPress = (index) => event => {
         if (event.key === 'Enter') {
-            if (props.items - 1 > index) {
-                // Todo: Do this through refs
-                document.getElementById(`item-${index + 1}`).focus()
+            const newInputs = inputs.map((input, currentIndex) => {
+                if (index !== currentIndex) return input;
+                return event.target.value
+            });
+
+            setInputs(newInputs)
+
+            if (index < inputs.length) {
+                setActiveInput(activeIndex + 1)
             }
+        }
+    }
+
+    const handleNextButton = (event) => {
+        if (activeIndex < inputs.length) {
+            setActiveInput(activeIndex + 1)
         }
     }
 
@@ -60,19 +77,27 @@ function GratefulForm(props) {
             {
             (!completed) ? 
                 <form onSubmit={handleFormSubmit}>
-                    <ul className="list-group list-group-flush grateful-input-list">
-                        <GratefulInputItems 
-                            items={inputs} 
-                            onChange={inputChangedHandler} 
-                            onKeyPress={handleInputKeyPress} />
-                    </ul>
-                    <p className="form-group">
-                        <button className="btn btn-primary btn-lg btn-block" disabled={!saveEnabled} type="submit">Save</button>
-                    </p>
+                    <GratefulInputItems 
+                        items={inputs}
+                        active={activeIndex}
+                        onChange={inputChangedHandler} 
+                        onKeyPress={handleInputKeyPress} />
+
+                    {
+                        (saveEnabled) ?
+                            <p className="form-group">
+                                <button className="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+                            </p>
+                        :
+                            <p className="form-group">
+                                <button className="btn btn-primary btn-lg btn-block" type="button" onClick={handleNextButton} >Next</button>
+                            </p>
+                    }
+                    
                     
                 </form>
             :
-                <SuccessfulSubmit name="Joe" />
+                <SuccessfulSubmit name="Joe" items={inputs} />
             }
         </div>
     )
