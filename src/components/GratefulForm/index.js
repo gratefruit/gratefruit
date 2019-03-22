@@ -8,9 +8,12 @@ function GratefulInputItems(props) {
     return items.map((item, index) => {
         return <li key={index}
             hidden={(index !== active)}
-            className="list-item list-item--input">
-            <input name={index} className="form-input"
+            className="list-item list-item--input mt- mb-">
+            <textarea
+                name={index}
+                className="form-input form-input-textarea fs16 bg-white c-gold"
                 id={`item-${index}`}
+                placeholder="Today I'm grateful for..."
                 onChange={props.onChange(index, item)}
                 onKeyPress={props.onKeyPress(index)}
                 ref={input => input && input.focus()}
@@ -73,7 +76,6 @@ function GratefulForm(props) {
 
     return (
         <div>
-            <h4>Today, I'm grateful for:</h4>
             {
                 (!completed) ?
                     <form onSubmit={handleFormSubmit}>

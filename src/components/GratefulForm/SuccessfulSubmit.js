@@ -11,9 +11,9 @@ export default function(props) {
 
   return (
     <div>
-      <h3 className="h3">Well done {props.name}</h3>
+      <h3 className="h3 c-ground mb-">Well done {props.name}</h3>
 
-      <ul className="list">{listItems}</ul>
+      <ul className="list c-gold">{listItems}</ul>
     </div>
   );
 }
