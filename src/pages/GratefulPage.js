@@ -3,19 +3,15 @@ import GratefulForm from '../components/GratefulForm'
 
 function GratefulPage(props) {
     return (
-    <div className="container lg-3">
-        <div className="row justify-content-md-center">
-            <div className="col col-lg-4">
-                <h2>Gratefruit</h2>
-            </div>
+    <div className="group">
 
+        <h2>Gratefruit</h2>
+
+        <div>
+            <p>What are you grateful for today?</p>
+            <GratefulForm items="3" />
         </div>
-        <div className="row justify-content-md-center">
-            <div className="col col-lg-4">
-                <p>What are you grateful for today?</p>
-                <GratefulForm items="3" />
-            </div>
-        </div>
+
     </div>
     );
 }

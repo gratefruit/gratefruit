@@ -1,18 +1,19 @@
-import React from 'react'
-
+import React from "react";
 
 export default function(props) {
-    const items = props.items || []
+  const items = props.items || [];
 
-    const listItems = items.map((gratitude, index) => <li key={index} >{gratitude}</li>)
+  const listItems = items.map((gratitude, index) => (
+    <li className="list-item" key={index}>
+      {gratitude}
+    </li>
+  ));
 
-    return (
-        <div>
-            Well done {props.name}
+  return (
+    <div>
+      <h3 className="h3">Well done {props.name}</h3>
 
-            <ul>
-                {listItems}
-            </ul>
-        </div>
-    )
+      <ul className="list">{listItems}</ul>
+    </div>
+  );
 }
