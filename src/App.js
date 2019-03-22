@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 
 import GratefulPage from './pages/GratefulPage'
 
