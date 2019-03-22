@@ -6,12 +6,12 @@ function GratefulInputItems(props) {
     const active = props.active || 0
 
     return items.map((item, index) => {
-        return <li key={index} 
-                   hidden={(index !== active)}
-                   className="list-group-item grateful-input-group">
-            <input name={index} className="form-control"
+        return <li key={index}
+            hidden={(index !== active)}
+            className="list-item list-item--input">
+            <input name={index} className="form-input"
                 id={`item-${index}`}
-                onChange={props.onChange(index, item)} 
+                onChange={props.onChange(index, item)}
                 onKeyPress={props.onKeyPress(index)}
                 ref={input => input && input.focus()}
                 value={item} />
@@ -75,29 +75,29 @@ function GratefulForm(props) {
         <div>
             <h4>Today, I'm grateful for:</h4>
             {
-            (!completed) ? 
-                <form onSubmit={handleFormSubmit}>
-                    <GratefulInputItems 
-                        items={inputs}
-                        active={activeIndex}
-                        onChange={inputChangedHandler} 
-                        onKeyPress={handleInputKeyPress} />
+                (!completed) ?
+                    <form onSubmit={handleFormSubmit}>
+                        <GratefulInputItems
+                            items={inputs}
+                            active={activeIndex}
+                            onChange={inputChangedHandler}
+                            onKeyPress={handleInputKeyPress} />
 
-                    {
-                        (saveEnabled) ?
-                            <p className="form-group">
-                                <button className="btn btn-primary btn-lg btn-block" type="submit">Save</button>
-                            </p>
-                        :
-                            <p className="form-group">
-                                <button className="btn btn-primary btn-lg btn-block" type="button" onClick={handleNextButton} >Next</button>
-                            </p>
-                    }
-                    
-                    
-                </form>
-            :
-                <SuccessfulSubmit name="Joe" items={inputs} />
+                        {
+                            (saveEnabled) ?
+                                <p className="form-group">
+                                    <button className="btn btn--primary" type="submit">Save</button>
+                                </p>
+                                :
+                                <p className="form-group">
+                                    <button className="btn btn--secondary" type="button" onClick={handleNextButton} >Next</button>
+                                </p>
+                        }
+
+
+                    </form>
+                    :
+                    <SuccessfulSubmit name="Joe" items={inputs} />
             }
         </div>
     )
