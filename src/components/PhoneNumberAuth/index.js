@@ -21,7 +21,7 @@ export default function(props) {
     const [user, setUser] = useState(null)
 
     useEffect(() => {
-      recaptchaVerifier = new firebaseAuth.RecaptchaVerifier('sign-in-button', {
+      recaptchaVerifier = new firebaseAuth.RecaptchaVerifier('recaptcha', {
         'size': 'invisible'
       });
     })
@@ -66,17 +66,17 @@ export default function(props) {
                 <input
                     type="tel"
                     value={phoneNumber}
+                    placeholder="Phone Number"
+                    className="form-input fs16 bg-white c-gold mb-"
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     /> <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
-                <br />
-                <button id="sign-in-button">Send Text</button>
+                <button id="sign-in-button" className="btn btn--primary">Request Code</button>
             </form>
-          :
+            :
             <form>
-                <p>{phoneNumber}</p>
-                <br />
-                <input type="text" placeholder="Code.." value={code} onChange={(e) => setCode(e.target.value)} /><br />
-                <button type="submit" onClick={ onSubmitCode }>Send Code</button>
+                <p class="mb- c-gold fs16">{phoneNumber}</p>
+                <input type="number" placeholder="Code.." className="form-input fs16 bg-white c-gold mb-" value={code} onChange={(e) => setCode(e.target.value)} />
+                <button type="submit" className="btn btn--primary" onClick={ onSubmitCode }>Confirm Code</button>
 
                 {
                   (user) && <PhoneNumberSuccess user={user} />
@@ -84,6 +84,7 @@ export default function(props) {
             </form>
         }
 
+        <div id="recaptcha" />
       </div>
 
     )
