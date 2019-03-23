@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import SuccessfulSubmit from './SuccessfulSubmit'
+import PhoneNumberAuth from '../PhoneNumberAuth'
 
 function GratefulInputItems(props) {
     const items = props.items || []
@@ -64,6 +65,8 @@ function GratefulForm(props) {
             if (index < inputs.length) {
                 setActiveInput(activeIndex + 1)
             }
+
+            event.preventDefault()
         }
     }
 
@@ -99,7 +102,8 @@ function GratefulForm(props) {
 
                     </form>
                     :
-                    <SuccessfulSubmit name="Joe" items={inputs} />
+                    <PhoneNumberAuth />
+                    /* <SuccessfulSubmit name="Joe" items={inputs} /> */
             }
         </div>
     )
