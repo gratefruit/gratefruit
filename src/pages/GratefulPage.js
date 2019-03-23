@@ -8,7 +8,7 @@ function GratefulPage(props) {
       <div className="entry">
         <div className="entry-header mt mb">
           <h2 className="fs24 fw-black c-pink">{moment().format(`dddd`)}</h2>
-          <h3 className="fs16 fw-black c-dark-red">{moment().format(`DD MMMM YYYY`)}</h3>
+          <h3 className="fs16 fw-black c-dark-red">{moment().format(`DD MMMM`)}</h3>
         </div>
 
         <GratefulForm items="3" />
