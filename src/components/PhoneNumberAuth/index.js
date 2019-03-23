@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { auth as firebaseAuth } from 'firebase'
-import firebase from '../../firebase'
-
-let recaptchaVerifier;
+import firebase, { firebaseErrorResponse } from '../../firebase'
 
 
 function PhoneNumberSuccess(props) {
@@ -19,43 +16,61 @@ export default function(props) {
     const [code, setCode] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-      recaptchaVerifier = new firebaseAuth.RecaptchaVerifier('recaptcha', {
-        'size': 'invisible'
+      window.recaptchaVerifier = window.recaptchaVerifier || new firebase.auth.RecaptchaVerifier('sign-in-button', {
+        'size': 'invisible',
+        'callback': console.log
       });
     })
 
+    /**
+     * Returns if a phone is valid or not
+     * @param {String} phoneNumber Phone number to check
+     */
     function isPhoneNumberValid(phoneNumber) {
-      var pattern = /^\+[0-9\s\-\(\)]+$/;
-      return phoneNumber.search(pattern) !== -1;
+      var pattern = /^[\s()+-]*([0-9][\s()+-]*){6,20}$/;
+      return pattern.test(phoneNumber)
     }
 
-    function onSubmitPhone(e) {
+    async function onSubmitPhone(e) {
         e.preventDefault()
+
         if (!isPhoneNumberValid(phoneNumber)) {
           return setErrorMessage('Phone number is not valid')
         }
 
-        firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
-          .then((confirmation) => {
-            // SMS Sent
-            setConfirmationResult(confirmation)
-          })
-          .catch((error) => {
-            // SMS not sent
-            console.error(error)
-          })
+        setErrorMessage('')
+        setLoading(true)
+
+        try {
+          const result = await firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+          setConfirmationResult(result)
+        } catch(e) {
+          setErrorMessage(firebaseErrorResponse(e))
+        }
+
+        setLoading(false)
     }
 
-    function onSubmitCode(e) {
+    async function onSubmitCode(e) {
       e.preventDefault()
-      confirmationResult.confirm(code).then((result) => {
+      setLoading(true)
+
+      try {
+        const result = await confirmationResult.confirm(code)
         setUser(result.user)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      } catch(e) {
+        setErrorMessage(firebaseErrorResponse(e))
+      }
+
+      setLoading(false)
+    }
+
+    function onResendPhoneNumber(e) {
+      setCode(null)
+      setConfirmationResult(null)
     }
 
     return (
@@ -70,13 +85,20 @@ export default function(props) {
                     className="form-input fs16 bg-white c-gold mb-"
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     /> <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
-                <button id="sign-in-button" className="btn btn--primary">Request Code</button>
+                <button type="submit" className="btn btn--primary" disabled={loading} id="sign-in-button">{ loading ? 'Sending..' : 'Send Text' }</button>
             </form>
             :
             <form>
-                <p class="mb- c-gold fs16">{phoneNumber}</p>
-                <input type="number" placeholder="Code.." className="form-input fs16 bg-white c-gold mb-" value={code} onChange={(e) => setCode(e.target.value)} />
-                <button type="submit" className="btn btn--primary" onClick={ onSubmitCode }>Confirm Code</button>
+                <p className="c-gold fs20 mb-">{phoneNumber}</p>
+                <input type="text"
+                    placeholder="Code..."
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    className="form-input fs16 bg-white c-gold mb-"
+                    />
+                <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
+                <button type="submit" className="btn btn--primary" disabled={loading} onClick={ onSubmitCode }>{ loading ? 'Loading..' : 'Send Text' }</button>
+                <p className="mt- fs12 c-gold">Didn't get the code? <span onClick={ onResendPhoneNumber }>Click here try again.</span></p>
 
                 {
                   (user) && <PhoneNumberSuccess user={user} />
