@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { auth as firebaseAuth } from 'firebase'
-import firebase from '../../firebase'
-
-let recaptchaVerifier;
+import firebase, { firebaseErrorResponse } from '../../firebase'
 
 
 function PhoneNumberSuccess(props) {
@@ -19,43 +16,58 @@ export default function(props) {
     const [code, setCode] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [user, setUser] = useState(null)
+    const [loading, setLoading] = useState(false)
 
     useEffect(() => {
-      recaptchaVerifier = new firebaseAuth.RecaptchaVerifier('sign-in-button', {
-        'size': 'invisible'
+      window.recaptchaVerifier = window.recaptchaVerifier || new firebase.auth.RecaptchaVerifier('sign-in-button', {
+        'size': 'invisible',
+        'callback': console.log
       });
     })
 
+    /**
+     * Returns if a phone is valid or not
+     * @param {String} phoneNumber Phone number to check
+     */
     function isPhoneNumberValid(phoneNumber) {
-      var pattern = /^\+[0-9\s\-\(\)]+$/;
-      return phoneNumber.search(pattern) !== -1;
+      var pattern = /^[\s()+-]*([0-9][\s()+-]*){6,20}$/;
+      return pattern.test(phoneNumber)
     }
 
     function onSubmitPhone(e) {
         e.preventDefault()
+
         if (!isPhoneNumberValid(phoneNumber)) {
           return setErrorMessage('Phone number is not valid')
         }
 
-        firebase.auth().signInWithPhoneNumber(phoneNumber, recaptchaVerifier)
-          .then((confirmation) => {
-            // SMS Sent
-            setConfirmationResult(confirmation)
-          })
+        setErrorMessage('')
+
+        firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+          .then(setConfirmationResult)
           .catch((error) => {
             // SMS not sent
-            console.error(error)
+            setErrorMessage(firebaseErrorResponse(error))
           })
     }
 
-    function onSubmitCode(e) {
+    async function onSubmitCode(e) {
       e.preventDefault()
-      confirmationResult.confirm(code).then((result) => {
+      setLoading(true)
+
+      try {
+        const result = await confirmationResult.confirm(code)
         setUser(result.user)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+      } catch(e) {
+        setErrorMessage(firebaseErrorResponse(e))
+      }
+
+      setLoading(false)
+    }
+
+    function onResendPhoneNumber(e) {
+      setCode(null)
+      setConfirmationResult(null)
     }
 
     return (
@@ -69,14 +81,18 @@ export default function(props) {
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     /> <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
                 <br />
-                <button id="sign-in-button">Send Text</button>
+                <button type="submit" disabled={loading} id="sign-in-button">{ loading ? 'Sending..' : 'Send Text' }</button>
             </form>
           :
             <form>
                 <p>{phoneNumber}</p>
                 <br />
-                <input type="text" placeholder="Code.." value={code} onChange={(e) => setCode(e.target.value)} /><br />
-                <button type="submit" onClick={ onSubmitCode }>Send Code</button>
+                <input type="text" placeholder="Code.." value={code} onChange={(e) => setCode(e.target.value)} />
+                <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
+                <br />
+                <button type="submit" disabled={loading} onClick={ onSubmitCode }>{ loading ? 'Loading..' : 'Send Text' }</button>
+                <br />
+                Didn't get the code? <span onClick={ onResendPhoneNumber }>Click here try again.</span>
 
                 {
                   (user) && <PhoneNumberSuccess user={user} />
