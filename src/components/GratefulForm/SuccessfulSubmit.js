@@ -14,6 +14,8 @@ export default function(props) {
       <h3 className="h3 c-ground mb-">Well done {props.name}</h3>
 
       <ul className="list c-gold">{listItems}</ul>
+
+      <button className="btn btn--primary" onClick={props.onComplete}>Save</button>
     </div>
   );
 }

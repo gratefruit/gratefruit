@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import GratefulForm from "../components/GratefulForm";
+import PhoneNumberAuth from '../components/PhoneNumberAuth'
 import moment from "moment";
 
-function GratefulPage(props) {
+function GratefulPage() {
+  const [completed, setCompleted] = useState(false)
+
   return (
     <div className="group">
       <div className="entry">
@@ -11,7 +14,8 @@ function GratefulPage(props) {
           <h3 className="fs16 fw-black c-dark-red">{moment().format(`DD MMMM YYYY`)}</h3>
         </div>
 
-        <GratefulForm items="3" />
+        { !completed && <GratefulForm hidden={completed} items="3" onComplete={(e) => setCompleted(true)} /> }
+        { completed && <PhoneNumberAuth hidden={completed} /> }
       </div>
     </div>
   );

@@ -34,7 +34,7 @@ export default function(props) {
       return pattern.test(phoneNumber)
     }
 
-    function onSubmitPhone(e) {
+    async function onSubmitPhone(e) {
         e.preventDefault()
 
         if (!isPhoneNumberValid(phoneNumber)) {
@@ -42,13 +42,16 @@ export default function(props) {
         }
 
         setErrorMessage('')
+        setLoading(true)
 
-        firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
-          .then(setConfirmationResult)
-          .catch((error) => {
-            // SMS not sent
-            setErrorMessage(firebaseErrorResponse(error))
-          })
+        try {
+          const result = await firebase.auth().signInWithPhoneNumber(phoneNumber, window.recaptchaVerifier)
+          setConfirmationResult(result)
+        } catch(e) {
+          setErrorMessage(firebaseErrorResponse(e))
+        }
+
+        setLoading(false)
     }
 
     async function onSubmitCode(e) {
@@ -78,19 +81,26 @@ export default function(props) {
                 <input
                     type="tel"
                     value={phoneNumber}
+                    placeholder="Phone number.."
+                    className="form-input"
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     /> <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
                 <br />
-                <button type="submit" disabled={loading} id="sign-in-button">{ loading ? 'Sending..' : 'Send Text' }</button>
+                <button type="submit" className="btn btn--primary" disabled={loading} id="sign-in-button">{ loading ? 'Sending..' : 'Send Text' }</button>
             </form>
           :
             <form>
                 <p>{phoneNumber}</p>
                 <br />
-                <input type="text" placeholder="Code.." value={code} onChange={(e) => setCode(e.target.value)} />
+                <input type="text"
+                    placeholder="Code.."
+                    value={code}
+                    onChange={(e) => setCode(e.target.value)}
+                    className="form-input"
+                    />
                 <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
                 <br />
-                <button type="submit" disabled={loading} onClick={ onSubmitCode }>{ loading ? 'Loading..' : 'Send Text' }</button>
+                <button type="submit" className="btn btn--primary" disabled={loading} onClick={ onSubmitCode }>{ loading ? 'Loading..' : 'Send Text' }</button>
                 <br />
                 Didn't get the code? <span onClick={ onResendPhoneNumber }>Click here try again.</span>
 
