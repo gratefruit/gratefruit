@@ -11,7 +11,6 @@ function GratefulInputItems(props) {
             hidden={(index !== active)}
             className="list-item list-item--input mt- mb-">
             <textarea
-                required="true"
                 name={index}
                 className="form-input form-input-textarea fs16 bg-white c-gold"
                 id={`item-${index}`}
