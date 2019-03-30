@@ -5,6 +5,7 @@ import GratefulInputItems from './GratefulInputItems'
 function GratefulForm(props) {
     const [inputs, setInputs] = useState(Array.from({ length: props.items }, () => ""))
     const [saveEnabled, setSaveEnabled] = useState(false)
+    const [nextEnabled, setNextEnabled] = useState(false)
     const [completed, setCompleted] = useState(false)
     const [activeIndex, setActiveInput] = useState(0)
 
@@ -13,14 +14,10 @@ function GratefulForm(props) {
             if (index !== currentIndex) return input;
             return event.target.value
         });
-
-        if (newInputs.filter((input) => input.length > 0).length === newInputs.length) {
+        if (event.target.value) setNextEnabled(true)
+        if (nextEnabled && index === inputs.length - 1) {
             setSaveEnabled(true)
         }
-        else {
-            setSaveEnabled(false)
-        }
-
         setInputs(newInputs)
     }
 
@@ -48,6 +45,7 @@ function GratefulForm(props) {
     const handleNextButton = (event) => {
         if (activeIndex < inputs.length) {
             setActiveInput(activeIndex + 1)
+            setNextEnabled(false)
         }
     }
 
@@ -72,7 +70,7 @@ function GratefulForm(props) {
                                 </p>
                                 :
                                 <p className="form-group">
-                                    <button className="btn btn--secondary" type="button" onClick={handleNextButton} >Next</button>
+                                    <button className="btn btn--secondary" disabled={!nextEnabled} type="button" onClick={handleNextButton} >Next</button>
                                 </p>
                         }
 
