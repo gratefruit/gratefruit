@@ -39,6 +39,8 @@ function GratefulForm(props) {
             if (index < inputs.length) {
                 setActiveInput(activeIndex + 1)
             }
+
+            event.preventDefault()
         }
     }
 
@@ -66,7 +68,7 @@ function GratefulForm(props) {
                         {
                             (saveEnabled) ?
                                 <p className="form-group">
-                                    <button className="btn btn--primary" type="submit">Save</button>
+                                    <button className="btn btn--primary" type="submit">Next</button>
                                 </p>
                                 :
                                 <p className="form-group">
@@ -77,7 +79,7 @@ function GratefulForm(props) {
 
                     </form>
                     :
-                    <SuccessfulSubmit name="Joe" items={inputs} />
+                    <SuccessfulSubmit onComplete={props.onComplete} name="Joe" items={inputs} />
             }
         </div>
     )
