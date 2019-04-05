@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import firebase from '../firebase'
 import GratefulForm from "../components/GratefulForm";
 import PhoneNumberAuth from '../components/PhoneNumberAuth'
 import moment from "moment";
 
 function GratefulPage() {
   const [completed, setCompleted] = useState(false)
+  const [user, setUser] = useState(null)
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(setUser)
+  })
 
   return (
     <div className="group">
@@ -15,7 +21,8 @@ function GratefulPage() {
         </div>
 
         { !completed && <GratefulForm hidden={completed} items="3" onComplete={(e) => setCompleted(true)} /> }
-        { completed && <PhoneNumberAuth hidden={completed} /> }
+        { completed && !user && <PhoneNumberAuth hidden={completed} onComplete={setUser} /> }
+        { user && completed && <span>Thank you for submitting, come back tomorrow</span>}
       </div>
     </div>
   );

@@ -54,12 +54,6 @@ function GratefulForm(props) {
 
     const handleInputKeyPress = (index) => event => {
         if (event.key === 'Enter') {
-            const newInputs = inputs.map((input, currentIndex) => {
-                if (index !== currentIndex) return input;
-                return event.target.value
-            });
-
-            setInputs(newInputs)
 
             if (index < inputs.length) {
                 setActiveInput(activeIndex + 1)
