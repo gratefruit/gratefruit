@@ -77,7 +77,7 @@ export default function(props) {
       <div>
         {
           (confirmationResult === null) ?
-            <form onSubmit={onSubmitPhone}>
+            <form>
                 <input
                     type="tel"
                     value={phoneNumber}
@@ -85,7 +85,7 @@ export default function(props) {
                     className="form-input fs16 bg-white c-gold mb-"
                     onChange={(e) => setPhoneNumber(e.target.value)}
                     /> <span hidden={errorMessage === ''} style={{ "color": "red" }}>{errorMessage}</span>
-                <button type="submit" className="btn btn--primary" disabled={loading} id="sign-in-button">{ loading ? 'Sending..' : 'Send Text' }</button>
+                <button type="submit" className="btn btn--primary" onClick={onSubmitPhone} disabled={loading} id="sign-in-button">{ loading ? 'Sending..' : 'Send Text' }</button>
             </form>
             :
             <form>

@@ -4,13 +4,21 @@ import GratefulForm from "../components/GratefulForm";
 import PhoneNumberAuth from '../components/PhoneNumberAuth'
 import moment from "moment";
 
+
 function GratefulPage() {
-  const [completed, setCompleted] = useState(false)
+  const [completed, setCompleted] = useState(null)
   const [user, setUser] = useState(null)
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(setUser)
   })
+
+  useEffect(() => {
+    if (user && completed) {
+      console.log("Hold on we gotta save this thing")
+    }
+  }, [user, completed])
+
 
   return (
     <div className="group">
@@ -20,7 +28,7 @@ function GratefulPage() {
           <h3 className="fs16 fw-black c-dark-red">{moment().format(`DD MMMM`)}</h3>
         </div>
 
-        { !completed && <GratefulForm hidden={completed} items="3" onComplete={(e) => setCompleted(true)} /> }
+        { !completed && <GratefulForm hidden={completed} items="3" onComplete={setCompleted} /> }
         { completed && !user && <PhoneNumberAuth hidden={completed} onComplete={setUser} /> }
         { user && completed && <span>Thank you for submitting, come back tomorrow</span>}
       </div>
