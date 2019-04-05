@@ -36,6 +36,11 @@ html {
   font-family: var(--font-family);
 }
 
+html,
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .group {
   max-width: 400px;
   margin: 0 auto;
