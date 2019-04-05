@@ -1,47 +1,60 @@
 import React, { useState, useEffect } from "react";
-import firebase from '../firebase'
+import firebase from "../firebase";
 import GratefulForm from "../components/GratefulForm";
-import PhoneNumberAuth from '../components/PhoneNumberAuth'
+import PhoneNumberAuth from "../components/PhoneNumberAuth";
+import DateHeader from "../components/DateHeader";
 import moment from "moment";
 
-const firestore = firebase.firestore()
+const firestore = firebase.firestore();
+
+const headerTitle = {
+  title: moment().format(`dddd`),
+  subtitle: moment().format(`DD MMMM`)
+};
+
+const emojis = [
+  `😌`,
+  `💃`,
+  `🙏`,
+  `🎉`,
+]
+
+// Generate random emoji
+const emoji = emojis[~~(emojis.length * Math.random())];
 
 async function saveGratitudeLog(uid, entries) {
-  await firestore.collection('gratitude').add({
+  await firestore.collection("gratitude").add({
     entries,
     uid,
     created: new Date()
-  })
+  });
 }
 
-
 function GratefulPage() {
-  const [entries, setEntries] = useState(null)
-  const [user, setUser] = useState(null)
+  const [entries, setEntries] = useState(null);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    firebase.auth().onAuthStateChanged(setUser)
-  })
+    firebase.auth().onAuthStateChanged(setUser);
+  });
 
   // When user and entries are both truthy, save the items in firebase with the user id
   useEffect(() => {
     if (user && entries) {
-      saveGratitudeLog(user.uid, entries).then(() => console.log("saved"))
+      saveGratitudeLog(user.uid, entries).then(() => console.log("saved"));
     }
-  }, [user, entries])
-
+  }, [user, entries]);
 
   return (
-    <div className="group">
+    <div>
       <div className="entry">
-        <div className="entry-header mt mb">
-          <h2 className="fs24 fw-black c-pink">{moment().format(`dddd`)}</h2>
-          <h3 className="fs16 fw-black c-dark-red">{moment().format(`DD MMMM`)}</h3>
-        </div>
+        <DateHeader emojis={emoji} data={headerTitle} />
 
-        { !entries && <GratefulForm hidden={entries} items="3" onComplete={setEntries} /> }
-        { entries && !user && <PhoneNumberAuth hidden={entries} onComplete={setUser} /> }
-        { user && entries && <span>Thank you for submitting, come back tomorrow</span>}
+        <div className="group">
+          {!entries && <GratefulForm hidden={entries} items="3" onComplete={setEntries} />}
+          {entries && !user && <PhoneNumberAuth hidden={entries} onComplete={setUser} />}
+          {user && entries && <span>Thank you for submitting, come back tomorrow</span>}
+        </div>
       </div>
     </div>
   );
