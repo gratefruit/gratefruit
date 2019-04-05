@@ -88,6 +88,9 @@ html {
 .pl { padding-left: var(--base-vertical-gutter); }
 .pl- { padding-left: calc(var(--base-vertical-gutter) / 2); }
 
+/* Position */
+.por { position: relative; }
+
 /* Font weights */
 .fw-light { font-weight: var(--font-weight-light); }
 .fw-bold { font-weight: var(--font-weight-bold); }
@@ -154,6 +157,12 @@ html {
 
 .form-input:focus  {
   border-color: rgba(0, 0, 0, 0.1);
+}
+
+.form-pagination {
+  position: absolute;
+  bottom: calc(var(--base-vertical-gutter) / 2);
+  right: calc(var(--base-vertical-gutter) / 2);
 }
 
 .btn {
