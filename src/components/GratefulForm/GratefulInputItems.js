@@ -18,7 +18,7 @@ const GratefulInputItems = (props) => {
               value={item} />
 
           <div className="form-pagination">
-            <Pagination items={props.active} />
+            <Pagination step={props.active} />
           </div>
       </li>
 }
