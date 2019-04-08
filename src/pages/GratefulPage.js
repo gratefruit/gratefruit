@@ -50,7 +50,7 @@ function GratefulPage() {
       <div className="entry">
         <DateHeader emojis={emoji} data={headerTitle} />
 
-        <div className="group">
+        <div className="group mt">
           {!entries && <GratefulForm hidden={entries} items="3" onComplete={setEntries} />}
           {entries && !user && <PhoneNumberAuth hidden={entries} onComplete={setUser} />}
           {user && entries && <span>Thank you for submitting, come back tomorrow</span>}
